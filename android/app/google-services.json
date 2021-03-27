@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "485746008913",
+    "project_id": "magnum---requisition-app-e3087",
+    "storage_bucket": "magnum---requisition-app-e3087.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485746008913:android:5fd23681395cd59eee2970",
+        "android_client_info": {
+          "package_name": "br.com.solutys.magnum_requisition_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485746008913-rr4k6hahqol02oggddtsvj904sk18qui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNtvw8KfCeHnZist1L_DbhIVqnGi5c9Kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485746008913-rr4k6hahqol02oggddtsvj904sk18qui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
