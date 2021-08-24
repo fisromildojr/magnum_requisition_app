@@ -83,7 +83,10 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return ProviderList(_selectedProvider);
+        return ProviderList(
+          _selectedProvider,
+          isReportsScreen: false,
+        );
       },
     );
   }
@@ -158,30 +161,46 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
         AppRoutes.REQUISITIONS,
         arguments: user,
       );
-      await FirebaseFirestore.instance.collection('requisitions').add({
-        'solvedIn': null,
-        'createdAt': DateTime.now(),
-        'description': _descriptionController.text,
-        'idCategory': selectedCategory.id,
-        'idDepartment': selectedDepartment.id,
-        'idProvider': selectedProvider.id,
-        'idSector': selectedSector.id,
-        'idUserRequested': user.id,
-        'nameCategory': selectedCategory.name,
-        'nameDepartment': selectedDepartment.name,
-        'nameProvider': selectedProvider.fantasyName,
-        'emailProvider': selectedProvider.email,
-        'number': null,
-        'docProvider': _docProviderController.text.toUpperCase(),
-        'nameSector': selectedSector.name,
-        'nameUserRequested': user.name,
-        'paymentForecastDate': _selectedPaymentForecastDate,
-        'purchaseDate': _selectedPurchaseDate,
-        'solvedByName': null,
-        'solvedById': null,
-        'status': 'PENDENTE',
-        'value': _valueController.numberValue,
-      });
+
+      var lastNumber = await FirebaseFirestore.instance
+          .collection('clients')
+          .doc('p9S0PgPYX5KNsFniea1M')
+          .get()
+          .then((value) => value.data()['lastNumber']);
+
+      await FirebaseFirestore.instance
+          .collection('clients')
+          .doc('p9S0PgPYX5KNsFniea1M')
+          .get()
+          .then((doc) => FirebaseFirestore.instance
+                  .collection('requisitions')
+                  .add({
+                'solvedIn': null,
+                'createdAt': DateTime.now(),
+                'description': _descriptionController.text,
+                'idCategory': selectedCategory.id,
+                'idDepartment': selectedDepartment.id,
+                'idProvider': selectedProvider.id,
+                'idSector': selectedSector.id,
+                'idUserRequested': user.id,
+                'nameCategory': selectedCategory.name,
+                'nameDepartment': selectedDepartment.name,
+                'nameProvider': selectedProvider.fantasyName,
+                'emailProvider': selectedProvider.email,
+                'number': lastNumber + 1,
+                'docProvider': _docProviderController.text.toUpperCase(),
+                'nameSector': selectedSector.name,
+                'nameUserRequested': user.name,
+                'paymentForecastDate': _selectedPaymentForecastDate,
+                'purchaseDate': _selectedPurchaseDate,
+                'solvedByName': null,
+                'solvedById': null,
+                'status': 'PENDENTE',
+                'value': _valueController.numberValue,
+              }).then((data) => FirebaseFirestore.instance
+                      .collection('clients')
+                      .doc('p9S0PgPYX5KNsFniea1M')
+                      .update({'lastNumber': lastNumber + 1})));
     }
   }
 

@@ -55,8 +55,6 @@ class _DepartmentsUserListState extends State<DepartmentsUserList> {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          // print(snapshot.data.id);
-
           final documents = snapshot.data.documents;
           return SingleChildScrollView(
               child: Card(

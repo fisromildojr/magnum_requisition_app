@@ -26,12 +26,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.teal,
-        backgroundColor: Colors.lightGreen,
-        accentColor: Colors.teal,
+        primarySwatch: Colors.orange,
+        backgroundColor: Colors.orange,
+        accentColor: Colors.deepPurple,
         accentColorBrightness: Brightness.dark,
         buttonTheme: ButtonTheme.of(context).copyWith(
-          buttonColor: Colors.teal,
+          buttonColor: Colors.orange,
           textTheme: ButtonTextTheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),

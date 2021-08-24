@@ -29,6 +29,7 @@ class _DepartmentListRequisitionState extends State<DepartmentListRequisition> {
       stream: widget.user.isAdmin
           ? FirebaseFirestore.instance
               .collection('departments')
+              .where('excluded', isEqualTo: false)
               .orderBy('name')
               .snapshots()
           : FirebaseFirestore.instance

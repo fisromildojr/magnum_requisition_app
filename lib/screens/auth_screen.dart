@@ -81,17 +81,16 @@ class _AuthScreenState extends State<AuthScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (Image.asset('assets/images/cropped.png') != null)
-              Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Image.asset(
-                  'assets/images/cropped.png',
-                  // fit: BoxFit.cover,
-                ),
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
               ),
+              child: Image.asset(
+                'assets/images/cropped.png',
+                // fit: BoxFit.cover,
+              ),
+            ),
             Stack(
               children: [
                 AuthForm(_handleSubmit),

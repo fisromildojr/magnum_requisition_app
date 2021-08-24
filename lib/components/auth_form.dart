@@ -23,6 +23,7 @@ class _AuthFormState extends State<AuthForm> {
     }
   }
 
+// Teste de alteração F4b1m
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -79,12 +80,11 @@ class _AuthFormState extends State<AuthForm> {
                     },
                   ),
                   SizedBox(height: 12),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text(_authData.isLogin ? 'Entrar' : 'Cadastrar'),
                     onPressed: _submit,
                   ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColor,
+                  TextButton(
                     child: Text(
                       _authData.isLogin
                           ? 'Criar uma nova conta?'

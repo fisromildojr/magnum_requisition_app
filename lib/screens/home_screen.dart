@@ -68,6 +68,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: appBar,
+
+      // drawer: Drawer(
+      //   child: ListView(
+      //     children: <Widget>[
+      //       UserAccountsDrawerHeader(
+      //         accountName: Text(
+      //           userName().toString(),
+      //           style: TextStyle(
+      //             fontWeight: FontWeight.bold,
+      //             fontSize: 17.0,
+      //           ),
+      //         ),
+      //         accountEmail: Text("fis.romildojr@gmail.com"),
+      //         currentAccountPicture: CircleAvatar(
+      //           backgroundImage: NetworkImage(
+      //               "https://cdn.pixabay.com/photo/2013/07/13/10/07/man-156584_960_720.png"),
+      //         ),
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.add),
+      //         title: Text("Solicitar"),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, '/requisitions_form1');
+      //         },
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.description),
+      //         title: Text("Requisições"),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, '/requisitions_list');
+      //         },
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.supervised_user_circle),
+      //         title: Text("Usuários"),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, '/users_list');
+      //         },
+      //       ),
+      //       ListTile(
+      //         leading: Icon(Icons.assignment),
+      //         title: Text("Relatórios"),
+      //         onTap: () {
+      //           Navigator.pushNamed(context, '/reports');
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('users')
@@ -105,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (user.isAdmin)
                     Container(
                       height: availableHeight * 0.2,
-                      padding: EdgeInsets.fromLTRB(30.0, .0, 30.0, 0),
+                      padding: EdgeInsets.all(10.0),
                       child: MenuCard(
                         title: "Relatorio",
                         icon: Icons.file_copy,
@@ -116,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   Container(
                     height: availableHeight * 0.8,
-                    padding: EdgeInsets.all(30.0),
+                    padding: EdgeInsets.all(10.0),
                     child: GridView.count(
                       crossAxisCount: 2,
                       children: <Widget>[

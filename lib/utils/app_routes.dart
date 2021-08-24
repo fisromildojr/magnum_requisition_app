@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 class AppRoutes {
   static const HOME = '/home_screen';
   static const REQUISITIONS = '/requisitions_screen';

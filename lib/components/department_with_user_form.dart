@@ -28,7 +28,10 @@ class _DepartmentWithUserFormState extends State<DepartmentWithUserForm> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('departments').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('departments')
+          .where('excluded', isEqualTo: false)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           // final departmentsUser = Firebase

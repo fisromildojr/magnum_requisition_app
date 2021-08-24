@@ -26,6 +26,7 @@ class _SectorListRequisitionState extends State<SectorListRequisition> {
           .collection('departments')
           .doc(widget.department.id)
           .collection('sectors')
+          .where('excluded', isEqualTo: false)
           .orderBy('name')
           .snapshots(),
       builder: (ctx, snapshot) {

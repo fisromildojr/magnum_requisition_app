@@ -6,6 +6,7 @@ class Provider {
   String city;
   String uf;
   bool excluded = false;
+  List<String> providerSearch = [];
 
   Provider({
     this.id,
@@ -15,5 +16,6 @@ class Provider {
     this.city,
     this.uf,
     this.excluded,
+    this.providerSearch,
   });
 }

@@ -80,7 +80,11 @@ class _ReportsFormState extends State<ReportsForm> {
     showModalBottomSheet(
       context: context,
       builder: (_) {
-        return ProviderList(_selectedProvider);
+        return ProviderList(
+          _selectedProvider,
+          isReportsScreen:
+              true, //Passa true para mostrar todos os fornecedores, inclusive os excluídos
+        );
       },
     );
   }

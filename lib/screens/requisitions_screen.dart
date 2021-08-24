@@ -1,5 +1,5 @@
+import 'package:magnum_requisition_app/screens/requisition_filter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:magnum_requisition_app/models/auth_data.dart';
@@ -13,6 +13,9 @@ class RequisitionsScreen extends StatefulWidget {
 
 class _RequisitionsScreenState extends State<RequisitionsScreen> {
   String filter = '';
+  String filterVal = '';
+  String filterNumForn = '';
+  AuthData user;
 
   void _selectRequisition(
       BuildContext context, Requisition requisition, AuthData user) {
@@ -25,6 +28,14 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
     );
   }
 
+  void setFilter(String fv, String fnf) {
+    Navigator.of(context).pop();
+    setState(() {
+      this.filterVal = fv;
+      this.filterNumForn = fnf;
+    });
+  }
+
   Future<void> _deleteRequisition(requisition) async {
     Navigator.of(context).pop();
 
@@ -34,9 +45,390 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
         .delete();
   }
 
+  void showModalFilter() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return RequisitionFilter(callback: this.setFilter);
+        });
+  }
+
+  GestureDetector listRequisition(Requisition rq, user) {
+    return GestureDetector(
+      // onTap: user.isAdmin
+      //     ? () => _selectRequisition(context, requisition, user)
+      //     : null,
+      onTap: () => _selectRequisition(context, rq, user),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: rq.status == 'PENDENTE'
+              ? Colors.amber
+              : rq.status == 'NEGADO'
+                  ? Colors.red
+                  : Colors.green,
+        ),
+        padding: EdgeInsets.all(6),
+        margin: EdgeInsets.all(2),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      rq.nameDepartment +
+                          ' - ' +
+                          DateFormat('dd/MM/y - HH:mm:ss')
+                              .format(rq.createdAt.toDate()),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  if (rq.status == 'PENDENTE' && rq.idUserRequested == user.id)
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () {
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Confirmação"),
+                                content: Text(
+                                    "Você deseja excluir essa requisição?"),
+                                actions: [
+                                  TextButton(
+                                    child: Text('Cancel'),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                  ),
+                                  TextButton(
+                                    child: Text('Continuar'),
+                                    onPressed: () => _deleteRequisition(rq),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                  // if (documents[i]['status'] != 'PENDENTE')
+                  Text(
+                    rq.number != null
+                        ? 'Nº: ${rq.number.toString()}'
+                        : 'Nº: ---',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Text(
+                  'Data da Compra: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    DateFormat('dd/MM/y').format(rq.purchaseDate.toDate()),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  'Descrição: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    rq.description,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  'Fornecedor: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    rq.nameProvider,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  'Departamento: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    rq.nameDepartment,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  'Centro de Custo: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    rq.nameSector,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  'Categoria: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    rq.nameCategory,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            if (user.isAdmin)
+              Row(
+                children: [
+                  Text(
+                    'Solicitado por: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      rq.nameUserRequested,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            if (rq.status == 'PENDENTE')
+              Row(
+                children: [
+                  Text(
+                    'Status: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      rq.status,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              )
+            else if (rq.status == 'NEGADO')
+              Row(
+                children: [
+                  Text(
+                    'Status: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      'Negado por ${rq.solvedByName}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              )
+            else
+              Row(
+                children: [
+                  Text(
+                    'Status: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      'Aprovado por ${rq.solvedByName}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'R\$ ${rq.value.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Stream getReqFirebase(bool adm, String filters) {
+    //Pega os itens do filtro
+    var p = filters.split(":");
+    //Campos usados o filtro
+    List<String> campos = ['status', 'value', 'docProvider'];
+    //Armazena as posições dos campos que serão filtrados
+    List<int> pos = [];
+    //Preenche as posiçoes
+    for (int i = 0; i <= p.length - 1; i++) {
+      if (p[i] != '') {
+        pos.add(i);
+      }
+    }
+    if (adm) {
+      if (pos.length == 0) {
+        return FirebaseFirestore.instance
+            .collection('requisitions')
+            .orderBy('createdAt', descending: true)
+            .snapshots();
+      } else {
+        if (pos.length == 1) {
+          return FirebaseFirestore.instance
+              .collection('requisitions')
+              .where(campos[pos[0]],
+                  isEqualTo: (campos[pos[0]] == 'value'
+                      ? double.parse(p[pos[0]])
+                      : p[pos[0]]))
+              .orderBy('createdAt', descending: true)
+              .snapshots();
+        } else {
+          if (pos.length == 2) {
+            return FirebaseFirestore.instance
+                .collection('requisitions')
+                .where(campos[pos[0]],
+                    isEqualTo: (campos[pos[0]] == 'value'
+                        ? double.parse(p[pos[0]])
+                        : p[pos[0]]))
+                .where(campos[pos[1]],
+                    isEqualTo: (campos[pos[1]] == 'value'
+                        ? double.parse(p[pos[1]])
+                        : p[pos[1]]))
+                .orderBy('createdAt', descending: true)
+                .snapshots();
+          } else {
+            if (pos.length == 3) {
+              return FirebaseFirestore.instance
+                  .collection('requisitions')
+                  .where(campos[pos[0]],
+                      isEqualTo: (campos[pos[0]] == 'value'
+                          ? double.parse(p[pos[0]])
+                          : p[pos[0]]))
+                  .where(campos[pos[1]],
+                      isEqualTo: (campos[pos[1]] == 'value'
+                          ? double.parse(p[pos[1]])
+                          : p[pos[1]]))
+                  .where(campos[pos[2]], isEqualTo: p[pos[2]])
+                  .orderBy('createdAt', descending: true)
+                  .snapshots();
+            }
+          }
+        }
+      }
+    } else {
+      if (pos.length == 0) {
+        return FirebaseFirestore.instance
+            .collection('requisitions')
+            .where('idUserRequested', isEqualTo: user.id)
+            .orderBy('createdAt', descending: true)
+            .snapshots();
+      } else {
+        if (pos.length == 1) {
+          return FirebaseFirestore.instance
+              .collection('requisitions')
+              .where('idUserRequested', isEqualTo: user.id)
+              .where(campos[pos[0]],
+                  isEqualTo: (campos[pos[0]] == 'value'
+                      ? double.parse(p[pos[0]])
+                      : p[pos[0]]))
+              .orderBy('createdAt', descending: true)
+              .snapshots();
+        } else {
+          if (pos.length == 2) {
+            return FirebaseFirestore.instance
+                .collection('requisitions')
+                .where('idUserRequested', isEqualTo: user.id)
+                .where(campos[pos[0]],
+                    isEqualTo: (campos[pos[0]] == 'value'
+                        ? double.parse(p[pos[0]])
+                        : p[pos[0]]))
+                .where(campos[pos[1]],
+                    isEqualTo: (campos[pos[1]] == 'value'
+                        ? double.parse(p[pos[1]])
+                        : p[pos[1]]))
+                .orderBy('createdAt', descending: true)
+                .snapshots();
+          } else {
+            if (pos.length == 3) {
+              return FirebaseFirestore.instance
+                  .collection('requisitions')
+                  .where('idUserRequested', isEqualTo: user.id)
+                  .where(campos[pos[0]],
+                      isEqualTo: (campos[pos[0]] == 'value'
+                          ? double.parse(p[pos[0]])
+                          : p[pos[0]]))
+                  .where(campos[pos[1]],
+                      isEqualTo: (campos[pos[1]] == 'value'
+                          ? double.parse(p[pos[1]])
+                          : p[pos[1]]))
+                  .where(campos[pos[2]], isEqualTo: p[pos[2]])
+                  .orderBy('createdAt', descending: true)
+                  .snapshots();
+            }
+          }
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context).settings.arguments as AuthData;
+    this.user = user;
     return Scaffold(
       appBar: AppBar(
         title: Text('Requisições'),
@@ -96,6 +488,21 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
                     ),
                   ),
                   DropdownMenuItem(
+                    value: 'mais',
+                    child: Container(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            //color: Colors.amber,
+                          ),
+                          SizedBox(width: 8),
+                          Text('Mais Filtros'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
                     value: 'limpar',
                     child: Container(
                       child: Row(
@@ -124,10 +531,15 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
                     setState(() {
                       filter = 'PENDENTE';
                     });
-                  } else
+                  } else if (filtro == 'mais') {
+                    showModalFilter();
+                  } else {
                     setState(() {
                       filter = '';
+                      filterVal = '';
+                      filterNumForn = '';
                     });
+                  }
                 },
               ),
             ),
@@ -135,29 +547,8 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
         ],
       ),
       body: StreamBuilder(
-        stream: user.isAdmin
-            ? filter == ''
-                ? FirebaseFirestore.instance
-                    .collection('requisitions')
-                    .orderBy('createdAt', descending: true)
-                    .snapshots()
-                : FirebaseFirestore.instance
-                    .collection('requisitions')
-                    .where('status', isEqualTo: filter)
-                    .orderBy('createdAt', descending: true)
-                    .snapshots()
-            : filter == ''
-                ? FirebaseFirestore.instance
-                    .collection('requisitions')
-                    .where('idUserRequested', isEqualTo: user.id)
-                    .orderBy('createdAt', descending: true)
-                    .snapshots()
-                : FirebaseFirestore.instance
-                    .collection('requisitions')
-                    .where('idUserRequested', isEqualTo: user.id)
-                    .where('status', isEqualTo: filter)
-                    .orderBy('createdAt', descending: true)
-                    .snapshots(),
+        stream: getReqFirebase(
+            user.isAdmin, filter + ":" + filterVal + ":" + filterNumForn),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -198,261 +589,7 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
                 status: documents[i]['status'],
                 value: documents[i]['value'],
               );
-              return GestureDetector(
-                // onTap: user.isAdmin
-                //     ? () => _selectRequisition(context, requisition, user)
-                //     : null,
-                onTap: () => _selectRequisition(context, requisition, user),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: documents[i]['status'] == 'PENDENTE'
-                        ? Colors.amber
-                        : documents[i]['status'] == 'NEGADO'
-                            ? Colors.red
-                            : Colors.green,
-                  ),
-                  padding: EdgeInsets.all(6),
-                  margin: EdgeInsets.all(2),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                documents[i]['nameDepartment'] +
-                                    ' - ' +
-                                    DateFormat('dd/MM/y - HH:mm:ss').format(
-                                        documents[i]['createdAt'].toDate()),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            if (documents[i]['status'] == 'PENDENTE' &&
-                                documents[i]['idUserRequested'] == user.id)
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                color: Theme.of(context).errorColor,
-                                onPressed: () {
-                                  return showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text("Confirmação"),
-                                          content: Text(
-                                              "Você deseja excluir essa requisição?"),
-                                          actions: [
-                                            FlatButton(
-                                              child: Text('Cancel'),
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                            ),
-                                            FlatButton(
-                                              child: Text('Continuar'),
-                                              onPressed: () =>
-                                                  _deleteRequisition(
-                                                      requisition),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
-                              ),
-                            if (documents[i]['status'] != 'PENDENTE')
-                              Text(
-                                documents[i]['number'] != null
-                                    ? 'Nº: ${documents[i]['number'].toString()}'
-                                    : 'Nº: ---',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Data da Compra: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              DateFormat('dd/MM/y').format(
-                                  documents[i]['purchaseDate'].toDate()),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Descrição: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              documents[i]['description'],
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Fornecedor: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              documents[i]['nameProvider'],
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Departamento: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              documents[i]['nameDepartment'],
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Centro de Custo: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              documents[i]['nameSector'],
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'Categoria: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Flexible(
-                            child: Text(
-                              documents[i]['nameCategory'],
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (user.isAdmin)
-                        Row(
-                          children: [
-                            Text(
-                              'Solicitado por: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                documents[i]['nameUserRequested'],
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (documents[i]['status'] == 'PENDENTE')
-                        Row(
-                          children: [
-                            Text(
-                              'Status: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                documents[i]['status'],
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        )
-                      else if (documents[i]['status'] == 'NEGADO')
-                        Row(
-                          children: [
-                            Text(
-                              'Status: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Negado por ${documents[i]['solvedByName']}',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        )
-                      else
-                        Row(
-                          children: [
-                            Text(
-                              'Status: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Aprovado por ${documents[i]['solvedByName']}',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'R\$ ${documents[i]['value'].toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
+              return listRequisition(requisition, user);
             },
           );
           // return Text('Chegou');

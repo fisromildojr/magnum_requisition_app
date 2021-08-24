@@ -29,80 +29,78 @@ class _ProviderFormState extends State<ProviderForm> {
     if (provider.fantasyName.trim().isEmpty || provider.email.trim().isEmpty) {
       return;
     }
+
     widget.onSubmit(provider);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // resizeToAvoidBottomPadding: true,
-      body: SingleChildScrollView(
-        child: Container(
-          // height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Card(
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _fantasyNameController,
-                        onSubmitted: (_) => _submitForm(),
-                        decoration: InputDecoration(
-                          labelText: 'Nome Fantasia *',
-                        ),
+    return SingleChildScrollView(
+      child: Container(
+        // height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Card(
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _fantasyNameController,
+                      onSubmitted: (_) => _submitForm(),
+                      decoration: InputDecoration(
+                        labelText: 'Nome Fantasia *',
                       ),
-                      TextField(
-                        controller: _emailController,
-                        onSubmitted: (_) => _submitForm(),
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: 'E-Mail *',
-                        ),
+                    ),
+                    TextField(
+                      controller: _emailController,
+                      onSubmitted: (_) => _submitForm(),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: 'E-Mail *',
                       ),
-                      TextField(
-                        controller: _addressController,
-                        onSubmitted: (_) => _submitForm(),
-                        decoration: InputDecoration(
-                          labelText: 'Endereço',
-                        ),
+                    ),
+                    TextField(
+                      controller: _addressController,
+                      onSubmitted: (_) => _submitForm(),
+                      decoration: InputDecoration(
+                        labelText: 'Endereço',
                       ),
-                      TextField(
-                        controller: _cityController,
-                        onSubmitted: (_) => _submitForm(),
-                        decoration: InputDecoration(
-                          labelText: 'Cidade',
-                        ),
+                    ),
+                    TextField(
+                      controller: _cityController,
+                      onSubmitted: (_) => _submitForm(),
+                      decoration: InputDecoration(
+                        labelText: 'Cidade',
                       ),
-                      TextField(
-                        controller: _ufController,
-                        onSubmitted: (_) => _submitForm(),
-                        decoration: InputDecoration(
-                          labelText: 'UF',
-                        ),
+                    ),
+                    TextField(
+                      controller: _ufController,
+                      onSubmitted: (_) => _submitForm(),
+                      decoration: InputDecoration(
+                        labelText: 'UF',
                       ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          RaisedButton(
-                            child: Text('Novo Fornecedor'),
-                            color: Theme.of(context).primaryColor,
-                            textColor: Theme.of(context).textTheme.button.color,
-                            onPressed: _submitForm,
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        RaisedButton(
+                          child: Text('Novo Fornecedor'),
+                          color: Theme.of(context).primaryColor,
+                          textColor: Theme.of(context).textTheme.button.color,
+                          onPressed: _submitForm,
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

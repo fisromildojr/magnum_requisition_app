@@ -100,11 +100,11 @@ class _DepartmentsScreenState extends State<DepartmentsScreen> {
       title: Text("Exclusão"),
       content: Text("Você deseja excluir o departamento?"),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text('Cancel'),
           onPressed: () => null,
         ),
-        FlatButton(
+        TextButton(
           child: Text('Continuar'),
           onPressed: () => null,
         ),
@@ -199,12 +199,12 @@ class _DepartmentsScreenState extends State<DepartmentsScreen> {
                                 content: Text(
                                     "Você deseja excluir o departamento ${department.name} ?"),
                                 actions: [
-                                  FlatButton(
+                                  TextButton(
                                     child: Text('Cancel'),
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                   ),
-                                  FlatButton(
+                                  TextButton(
                                     child: Text('Continuar'),
                                     onPressed: () =>
                                         _deleteDepartment(department),

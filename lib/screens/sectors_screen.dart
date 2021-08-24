@@ -101,12 +101,12 @@ class _SectorsScreenState extends State<SectorsScreen> {
                                   content: Text(
                                       "Você deseja excluir o Centro de Custo ${sector.name} ?"),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('Cancel'),
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('Continuar'),
                                       onPressed: () => _deleteSector(sector),
                                     ),
