@@ -7,107 +7,110 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:intl/intl.dart';
+import 'package:magnum_requisition_app/utils/app_routes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 
 // import 'package:permission/permission.dart';
 
-class ReportsScreen extends StatefulWidget {
+class BillsScreen extends StatefulWidget {
   @override
-  _ReportsScreenState createState() => _ReportsScreenState();
+  _BillsScreenState createState() => _BillsScreenState();
 }
 
-class _ReportsScreenState extends State<ReportsScreen> {
+class _BillsScreenState extends State<BillsScreen> {
   Future futureFilter = FirebaseFirestore.instance
       .collection('requisitions')
-      .where('status', isEqualTo: 'APROVADO')
-      .orderBy('createdAt', descending: true)
+      .where('paidOut', isEqualTo: false)
+      .orderBy('paymentForecastDate')
       .get();
 
-  _openFilterReportsFormModal(context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return ReportsForm(filter);
-      },
-    );
-  }
+  // _openFilterBillsFormModal(context) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (_) {
+  //       // return BillsFilterForm(filter);
+  //     },
+  //   );
+  // }
 
-  _getCsv(List<dynamic> requisitions) async {
-    List<List<dynamic>> rows = [];
-    List<dynamic> row = [];
-    row.add("#");
-    row.add("Numero");
-    row.add("Solicitado em");
-    row.add("Data da Compra");
-    row.add("Departamento");
-    row.add("Centro de Custo");
-    row.add("Categoria");
-    row.add("Solicitado por");
-    row.add("Aprovado por");
-    row.add("Descrição");
-    row.add("Valor");
-    row.add("Data Pagamento");
-    row.add("Pago");
-    rows.add(row);
-    for (int i = 0; i < requisitions.length; i++) {
-      List<dynamic> row = [];
-      row.add(i + 1);
-      row.add(requisitions[i].number ?? "null");
-      row.add(DateFormat('dd/MM/y - HH:mm:ss')
-          .format(requisitions[i].createdAt.toDate()));
-      row.add(
-          DateFormat('dd/MM/y').format(requisitions[i].purchaseDate.toDate()));
-      row.add(requisitions[i].nameDepartment);
-      row.add(requisitions[i].nameSector);
-      row.add(requisitions[i].nameCategory);
-      row.add(requisitions[i].nameUserRequested);
-      row.add(requisitions[i].solvedByName);
-      row.add(requisitions[i].description);
-      row.add(requisitions[i].value.toString().replaceAll('.', ','));
-      row.add((requisitions[i].paidOut)
-          ? DateFormat('dd/MM/y - HH:mm:ss')
-              .format(requisitions[i].paymentDate.toDate())
-          : DateFormat('dd/MM/y - HH:mm:ss')
-              .format(requisitions[i].paymentForecastDate.toDate()));
-      row.add((requisitions[i].paidOut) ? "SIM" : "NÃO");
-      rows.add(row);
-    }
+  // _getCsv(List<dynamic> requisitions) async {
+  //   List<List<dynamic>> rows = [];
+  //   List<dynamic> row = [];
+  //   row.add("#");
+  //   row.add("Numero");
+  //   row.add("Solicitado em");
+  //   row.add("Data da Compra");
+  //   row.add("Departamento");
+  //   row.add("Centro de Custo");
+  //   row.add("Categoria");
+  //   row.add("Solicitado por");
+  //   row.add("Aprovado por");
+  //   row.add("Descrição");
+  //   row.add("Valor");
+  //   row.add("Data Pagamento");
+  //   row.add("Pago");
+  //   rows.add(row);
+  //   for (int i = 0; i < requisitions.length; i++) {
+  //     List<dynamic> row = [];
+  //     row.add(i + 1);
+  //     row.add(requisitions[i].number ?? "null");
+  //     row.add(DateFormat('dd/MM/y - HH:mm:ss')
+  //         .format(requisitions[i].createdAt.toDate()));
+  //     row.add(
+  //         DateFormat('dd/MM/y').format(requisitions[i].purchaseDate.toDate()));
+  //     row.add(requisitions[i].nameDepartment);
+  //     row.add(requisitions[i].nameSector);
+  //     row.add(requisitions[i].nameCategory);
+  //     row.add(requisitions[i].nameUserRequested);
+  //     row.add(requisitions[i].solvedByName);
+  //     row.add(requisitions[i].description);
+  //     row.add(requisitions[i].value.toString().replaceAll('.', ','));
+  //     row.add((requisitions[i].paidOut)
+  //         ? DateFormat('dd/MM/y - HH:mm:ss')
+  //             .format(requisitions[i].paymentDate.toDate())
+  //         : DateFormat('dd/MM/y - HH:mm:ss')
+  //             .format(requisitions[i].paymentForecastDate.toDate()));
+  //     row.add((requisitions[i].paidOut) ? "SIM" : "NÃO");
+  //     rows.add(row);
+  //   }
 
-    String csv = const ListToCsvConverter().convert(rows);
+  //   String csv = const ListToCsvConverter().convert(rows);
 
-    Directory tempDir = await getTemporaryDirectory();
-    final fileName = "/relatorio.csv";
-    final filePath = tempDir.path + fileName;
-    await File(filePath).writeAsString(csv);
-    final List<String> files = [];
-    files.add(filePath as String);
-    Share.shareFiles(files, text: "Relatório das Requisições");
-  }
+  //   Directory tempDir = await getTemporaryDirectory();
+  //   final fileName = "/relatorio.csv";
+  //   final filePath = tempDir.path + fileName;
+  //   await File(filePath).writeAsString(csv);
+  //   final List<String> files = [];
+  //   files.add(filePath as String);
+  //   Share.shareFiles(files, text: "Relatório das Requisições");
+  // }
 
-  filter(dynamic stringFilter) {
-    Navigator.of(context).pop();
-    setState(() {
-      this.futureFilter = stringFilter as Future;
-    });
-  }
+  // filter(dynamic stringFilter) {
+  //   Navigator.of(context).pop();
+  //   setState(() {
+  //     this.futureFilter = stringFilter as Future;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     List<dynamic> requisitions = [];
     final user = ModalRoute.of(context).settings.arguments as AuthData;
     final appBar = AppBar(
-      title: Text('Relatório'),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.share),
-          onPressed: () => _getCsv(requisitions),
-        ),
-        IconButton(
-          icon: Icon(Icons.filter_alt),
-          onPressed: () => _openFilterReportsFormModal(context),
-        )
-      ],
+      title: Text('Contas a Pagar'),
+      // actions: [
+      //   IconButton(
+      //     icon: Icon(Icons.share),
+      //     onPressed: () => null,
+      //     // onPressed: () => _getCsv(requisitions),
+      //   ),
+      //   IconButton(
+      //     icon: Icon(Icons.filter_alt),
+      //     onPressed: () => null,
+      //     // onPressed: () => _openFilterReportsFormModal(context),
+      //   )
+      // ],
     );
 
     final availableHeight = MediaQuery.of(context).size.height -
@@ -116,8 +119,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     return Scaffold(
       appBar: appBar,
-      body: FutureBuilder(
-          future: futureFilter,
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('requisitions')
+              .where('paidOut', isEqualTo: false)
+              .orderBy('paymentForecastDate')
+              .snapshots(),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -201,7 +208,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       );
 
                       return GestureDetector(
-                        onTap: () => null,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.PAYMENT,
+                          arguments: {
+                            'requisition': requisition,
+                            'user': user,
+                          },
+                        ),
                         // onTap: user.isAdmin
                         //     ? () =>
                         //         _selectRequisition(context, requisition, user)

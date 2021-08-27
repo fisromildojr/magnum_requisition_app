@@ -1,9 +1,11 @@
 import 'package:magnum_requisition_app/screens/auth_screen.dart';
+import 'package:magnum_requisition_app/screens/bills_screen.dart';
 import 'package:magnum_requisition_app/screens/categories_screen.dart';
 import 'package:magnum_requisition_app/screens/departments_screen.dart';
 import 'package:magnum_requisition_app/screens/details_requisition_screen.dart';
 import 'package:magnum_requisition_app/screens/details_user_screen.dart';
 import 'package:magnum_requisition_app/screens/home_screen.dart';
+import 'package:magnum_requisition_app/screens/payment_screen.dart';
 import 'package:magnum_requisition_app/screens/providers_screen.dart';
 import 'package:magnum_requisition_app/screens/reports_screen.dart';
 import 'package:magnum_requisition_app/screens/requisition_form_screen.dart';
@@ -26,8 +28,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.orange,
-        backgroundColor: Colors.orange,
+        primarySwatch: Colors.blue,
+        backgroundColor: Colors.blue,
         accentColor: Colors.deepPurple,
         accentColorBrightness: Brightness.dark,
         buttonTheme: ButtonTheme.of(context).copyWith(
@@ -61,6 +63,8 @@ class MyApp extends StatelessWidget {
         AppRoutes.REQUISITION_DETAILS: (ctx) => RequisitionDetailsScreen(),
         AppRoutes.CATEGORIES: (ctx) => CategoriesScreen(),
         AppRoutes.RELATORIOS: (ctx) => ReportsScreen(),
+        AppRoutes.BILLS: (ctx) => BillsScreen(),
+        AppRoutes.PAYMENT: (ctx) => PaymentScreen(),
       },
     );
   }

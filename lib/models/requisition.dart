@@ -24,6 +24,9 @@ class Requisition {
   String solvedById;
   String status;
   double value;
+  Timestamp paymentDate;
+  String proofPayment;
+  bool paidOut;
 
   Requisition({
     this.id,
@@ -49,5 +52,8 @@ class Requisition {
     this.solvedById,
     this.status,
     this.value,
+    this.paymentDate,
+    this.proofPayment,
+    this.paidOut,
   });
 }

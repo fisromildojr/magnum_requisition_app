@@ -29,6 +29,7 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
   final _fantasyNameProviderController = TextEditingController();
   final _purchaseDateController = TextEditingController();
   final _paymentForecastDateController = TextEditingController();
+  final _paymentDateController = TextEditingController();
   final _nameDepartmentController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _nameSectorController = TextEditingController();
@@ -38,11 +39,14 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
 
   DateTime _selectedPurchaseDate;
   DateTime _selectedPaymentForecastDate;
+  DateTime _selectedPaymentDate;
 
   Provider selectedProvider;
   Department selectedDepartment;
   Sector selectedSector;
   Category selectedCategory;
+
+  bool paidOut = false;
 
   _showPurchaseDatePicker() {
     showDatePicker(
@@ -74,6 +78,25 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
           this._selectedPaymentForecastDate = pickedDate;
           _paymentForecastDateController.text =
               DateFormat('dd/MM/y').format(_selectedPaymentForecastDate);
+        });
+      }
+    });
+  }
+
+  _showPaymentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2050),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      } else {
+        setState(() {
+          this._selectedPaymentDate = pickedDate;
+          _paymentDateController.text =
+              DateFormat('dd/MM/y').format(_selectedPaymentDate);
         });
       }
     });
@@ -191,12 +214,15 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
                 'docProvider': _docProviderController.text.toUpperCase(),
                 'nameSector': selectedSector.name,
                 'nameUserRequested': user.name,
-                'paymentForecastDate': _selectedPaymentForecastDate,
+                'paymentForecastDate':
+                    (!paidOut) ? _selectedPaymentForecastDate : null,
+                'paymentDate': (paidOut) ? _selectedPaymentDate : null,
                 'purchaseDate': _selectedPurchaseDate,
                 'solvedByName': null,
                 'solvedById': null,
                 'status': 'PENDENTE',
                 'value': _valueController.numberValue,
+                'paidOut': paidOut,
               }).then((data) => FirebaseFirestore.instance
                       .collection('clients')
                       .doc('p9S0PgPYX5KNsFniea1M')
@@ -303,19 +329,78 @@ class _RequisitionFormScreenState extends State<RequisitionFormScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
-                  key: ValueKey('paymentForecastDate'),
-                  controller: _paymentForecastDateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                      labelText: 'Data Prevista para Pagamento*'),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Selecione uma Data...';
-                    }
-                    return null;
-                  },
-                  onTap: _showPaymentForecastDatePicker,
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 4.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Já foi pago?',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 17.0),
+                      ),
+                      SizedBox(width: 20.0),
+                      (paidOut)
+                          ? IconButton(
+                              icon: CircleAvatar(
+                                child: Icon(Icons.thumb_up),
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  paidOut = !paidOut;
+                                });
+                              },
+                            )
+                          : IconButton(
+                              icon: CircleAvatar(
+                                child: Icon(Icons.thumb_down),
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                // foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  paidOut = !paidOut;
+                                });
+                              },
+                            ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: !paidOut,
+                  child: TextFormField(
+                    key: ValueKey('paymentForecastDate'),
+                    controller: _paymentForecastDateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        labelText: 'Data Prevista para Pagamento*'),
+                    validator: (value) {
+                      if (value.isEmpty && !paidOut) {
+                        return 'Selecione uma Data...';
+                      }
+                      return null;
+                    },
+                    onTap: _showPaymentForecastDatePicker,
+                  ),
+                ),
+                Visibility(
+                  visible: paidOut,
+                  child: TextFormField(
+                    key: ValueKey('paymentDate'),
+                    controller: _paymentDateController,
+                    readOnly: true,
+                    decoration:
+                        InputDecoration(labelText: 'Data do Pagamento*'),
+                    validator: (value) {
+                      if (value.isEmpty && paidOut) {
+                        return 'Selecione uma Data...';
+                      }
+                      return null;
+                    },
+                    onTap: _showPaymentDatePicker,
+                  ),
                 ),
                 TextFormField(
                   key: ValueKey('docProvider'),

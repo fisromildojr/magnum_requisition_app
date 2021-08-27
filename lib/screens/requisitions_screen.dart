@@ -291,6 +291,28 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
                 ],
               ),
             Row(
+              children: [
+                Text(
+                  (rq.paidOut)
+                      ? 'Data do Pagamento: '
+                      : 'Data Prevista Pagamento: ',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    (rq.paidOut)
+                        ? DateFormat('dd/MM/y').format(rq.paymentDate.toDate())
+                        : DateFormat('dd/MM/y')
+                            .format(rq.paymentForecastDate.toDate()),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
@@ -588,6 +610,8 @@ class _RequisitionsScreenState extends State<RequisitionsScreen> {
                 solvedById: documents[i]['solvedById'],
                 status: documents[i]['status'],
                 value: documents[i]['value'],
+                paidOut: documents[i]['paidOut'],
+                paymentDate: documents[i]['paymentDate'],
               );
               return listRequisition(requisition, user);
             },

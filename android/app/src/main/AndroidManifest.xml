@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.solutys.magnum_requisition_app">
    <application
-        android:label="Magnum Gold"
+        android:label="Magnu Gold"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
         <activity

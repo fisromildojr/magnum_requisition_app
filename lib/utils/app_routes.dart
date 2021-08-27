@@ -12,4 +12,6 @@ class AppRoutes {
   static const REQUISITION_DETAILS = '/details_requisition_screen';
   static const CATEGORIES = '/categories_screen';
   static const RELATORIOS = '/reports_screen';
+  static const BILLS = '/bills_screen';
+  static const PAYMENT = '/payment_screen';
 }

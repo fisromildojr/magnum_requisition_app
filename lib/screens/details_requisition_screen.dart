@@ -319,6 +319,32 @@ class _RequisitionDetailsScreenState extends State<RequisitionDetailsScreen> {
                         ],
                       ),
                     ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          (requisition.paidOut)
+                              ? 'Data do Pagamento: '
+                              : 'Data Prevista Pagamento: ',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            (requisition.paidOut)
+                                ? DateFormat('dd/MM/y')
+                                    .format(requisition.paymentDate.toDate())
+                                : DateFormat('dd/MM/y').format(
+                                    requisition.paymentForecastDate.toDate()),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

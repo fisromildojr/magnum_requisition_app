@@ -28,6 +28,7 @@ class _ReportsFormState extends State<ReportsForm> {
 
   final _initialDateController = TextEditingController();
   final _finalDateController = TextEditingController();
+  final _paymentForecastDateController = TextEditingController();
 
   final _fantasyNameProviderController = TextEditingController();
   final _nameUserController = TextEditingController();
@@ -43,6 +44,8 @@ class _ReportsFormState extends State<ReportsForm> {
 
   DateTime _selectedInitialDate;
   DateTime _selectedFinalDate;
+
+  DateTime _selectedPaymentForecastDate;
 
   _showInitialDatePicker() {
     showDatePicker(
@@ -72,6 +75,22 @@ class _ReportsFormState extends State<ReportsForm> {
         this._selectedFinalDate = pickedDate;
         _finalDateController.text =
             DateFormat('dd/MM/y').format(_selectedFinalDate);
+      });
+    });
+  }
+
+  _showPaymentForecastDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2050),
+    ).then((pickedDate) {
+      if (pickedDate == null) return;
+      setState(() {
+        this._selectedPaymentForecastDate = pickedDate;
+        _paymentForecastDateController.text =
+            DateFormat('dd/MM/y').format(_selectedPaymentForecastDate);
       });
     });
   }
@@ -206,6 +225,7 @@ class _ReportsFormState extends State<ReportsForm> {
         widget.onSubmit(futureFilter);
       }
 
+      // Alterado o só por data para Magnu Gold (Quando for só por data ele filtra por contas a pagar)
       // Filtro só por data
       if (filterReports.initialDate != null &&
           filterReports.finalDate != null &&

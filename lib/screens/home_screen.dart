@@ -151,24 +151,44 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Column(
                 children: [
-                  if (user.isAdmin)
-                    Container(
-                      height: availableHeight * 0.2,
-                      padding: EdgeInsets.all(10.0),
-                      child: MenuCard(
-                        title: "Relatorio",
-                        icon: Icons.file_copy,
-                        color: Colors.orange,
-                        url: AppRoutes.RELATORIOS,
-                        user: user,
-                      ),
-                    ),
+                  // if (user.isAdmin)
+                  //   Container(
+                  //     height: availableHeight * 0.3,
+                  //     padding: EdgeInsets.all(10.0),
+                  //     child: MenuCard(
+                  //       title: "Relatorio",
+                  //       icon: Icons.file_copy,
+                  //       color: Colors.orange,
+                  //       url: AppRoutes.RELATORIOS,
+                  //       user: user,
+                  //     ),
+                  //   ),
                   Container(
-                    height: availableHeight * 0.8,
+                    height: availableHeight * 1.0,
                     padding: EdgeInsets.all(10.0),
                     child: GridView.count(
                       crossAxisCount: 2,
                       children: <Widget>[
+                        Visibility(
+                          visible: user.isAdmin,
+                          child: MenuCard(
+                            title: "Relatorio",
+                            icon: Icons.file_copy,
+                            color: Colors.orange,
+                            url: AppRoutes.RELATORIOS,
+                            user: user,
+                          ),
+                        ),
+                        Visibility(
+                          visible: user.isAdmin,
+                          child: MenuCard(
+                            title: "Contas a Pagar",
+                            icon: Icons.payments_sharp,
+                            color: Colors.blueGrey,
+                            url: AppRoutes.BILLS,
+                            user: user,
+                          ),
+                        ),
                         MenuCard(
                           title: "Solicitar",
                           icon: Icons.add,
