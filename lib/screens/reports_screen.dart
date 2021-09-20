@@ -76,12 +76,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     String csv = const ListToCsvConverter().convert(rows);
 
+    WidgetsFlutterBinding.ensureInitialized();
     Directory tempDir = await getTemporaryDirectory();
     final fileName = "/relatorio.csv";
     final filePath = tempDir.path + fileName;
     await File(filePath).writeAsString(csv);
     final List<String> files = [];
-    files.add(filePath as String);
+    files.add(filePath);
     Share.shareFiles(files, text: "Relatório das Requisições");
   }
 
